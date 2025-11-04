@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal GitHub Page - Performance Monitor</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for a polished look */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* Slate-900 dark background */
+        }
+        .fps-display {
+            /* Custom pulse animation for the FPS counter */
+            animation: pulse-ring 2s infinite;
+        }
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(37, 99, 235, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+        }
+        /* Custom scrollbar styling for a cleaner look */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
+        ::-webkit-scrollbar-track { background: #1e293b; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-6 text-gray-100">
+
+    <!-- FPS COUNTER DISPLAY (Position Fixed) -->
+    <div id="fps-display" class="fixed top-6 right-6 bg-blue-600 text-white text-lg font-extrabold px-4 py-2 rounded-lg shadow-2xl transition-all duration-300 transform hover:scale-110 select-none fps-display z-50">
+        <div class="flex items-center space-x-2">
+             <!-- Lucide Performance Icon SVG (inline) -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+                <path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M4.93 19.07l1.41-1.41"/><path d="M17.66 6.34l1.41-1.41"/><circle cx="12" cy="12" r="7"/>
+            </svg>
+            <span class="tracking-widest">FPS:</span>
+            <span id="fps-counter" class="ml-1 w-8 text-right">000</span>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT CARD -->
+    <div class="max-w-4xl w-full bg-gray-800 rounded-2xl shadow-2xl p-8 md:p-12 space-y-10 border border-gray-700/50">
+        
+        <!-- HEADER SECTION -->
+        <header class="text-center border-b border-gray-700 pb-6">
+            <h1 class="text-4xl md:text-6xl font-black text-white leading-tight">
+                <span class="text-blue-400">Name</span>.GitHub.io
+            </h1>
+            <p class="mt-4 text-xl text-gray-400 font-light">
+                A simple, responsive landing page for my projects and profile.
+            </p>
+        </header>
+
+        <!-- PERFORMANCE MONITOR SECTION -->
+        <section class="space-y-4">
+            <h2 class="text-2xl font-bold text-blue-400 flex items-center">
+                Performance Status
+            </h2>
+            <p class="text-gray-300">
+                The **FPS Counter** in the top corner measures the performance of your browser's rendering loop (`requestAnimationFrame`). On modern devices, this value should be near your monitor's refresh rate (typically **60 FPS** or higher).
+            </p>
+            <div class="bg-gray-700/50 p-4 rounded-lg border border-gray-600/50">
+                <p class="text-sm text-gray-400">
+                    This website is minimal, so high FPS indicates your browser is operating efficiently. A drop in FPS might occur during heavy tasks or on less powerful hardware.
+                </p>
+            </div>
+        </section>
+
+        <!-- PROJECTS/LINKS SECTION -->
+        <section class="space-y-4">
+            <h2 class="text-2xl font-bold text-blue-400">Projects & Links</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <a href="https://github.com/your-username/repo-1" target="_blank" class="block bg-gray-700 p-5 rounded-xl transition-all duration-200 hover:bg-gray-600 hover:shadow-lg">
+                    <h3 class="font-semibold text-lg text-white">Project One</h3>
+                    <p class="text-gray-400 text-sm">A brief description of my most recent or favorite GitHub repository.</p>
+                </a>
+                <a href="https://linkedin.com/in/your-profile" target="_blank" class="block bg-gray-700 p-5 rounded-xl transition-all duration-200 hover:bg-gray-600 hover:shadow-lg">
+                    <h3 class="font-semibold text-lg text-white">Professional Profile</h3>
+                    <p class="text-gray-400 text-sm">Connect with me on LinkedIn or another professional network.</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- FOOTER SECTION -->
+        <footer class="pt-6 border-t border-gray-700 text-center text-sm text-gray-500">
+            <p>&copy; 2025 [Your Name]. Built simple, deployed with GitHub Pages.</p>
+            <p class="mt-1">
+                <a href="https://github.com/[your-username]" class="text-blue-500 hover:text-blue-400 font-medium transition duration-150">
+                    Source Code on GitHub
+                </a>
+            </p>
+        </footer>
+    </div>
+
+    <!-- JAVASCRIPT FOR FPS COUNTER LOGIC -->
+    <script>
+        // --- FPS COUNTER LOGIC ---
+        
+        let prevTime = performance.now();
+        const fpsCounter = document.getElementById('fps-counter');
+        // Update the FPS display every 10 frames for a smoother reading
+        const updateInterval = 10; 
+        let frameCount = 0;
+        let cumulativeFPS = 0;
+
+        /**
+         * The main animation loop for performance monitoring.
+         * @param {number} time - The DOMHighResTimeStamp passed by requestAnimationFrame.
+         */
+        function fpsLoop(time) {
+            const delta = time - prevTime;
+            prevTime = time;
+
+            // Calculate instantaneous FPS
+            const currentFPS = 1000 / delta;
+            
+            // Add to cumulative total
+            cumulativeFPS += currentFPS;
+            frameCount++;
+
+            if (frameCount >= updateInterval) {
+                // Calculate average FPS over the last 'updateInterval' frames
+                const averageFPS = Math.round(cumulativeFPS / frameCount);
+
+                if (fpsCounter) {
+                    // Update the display with the calculated average FPS
+                    // Cap at 999 and pad with leading zeros (e.g., 60 -> 060)
+                    const displayFPS = Math.min(999, averageFPS);
+                    fpsCounter.textContent = displayFPS.toString().padStart(3, '0');
+                }
+
+                // Reset counters for the next interval
+                frameCount = 0;
+                cumulativeFPS = 0;
+            }
+
+            // Continue the loop
+            requestAnimationFrame(fpsLoop);
+        }
+
+        // Start the loop once the window is fully loaded
+        window.onload = function() {
+            if(fpsCounter) {
+                requestAnimationFrame(fpsLoop);
+            } else {
+                console.error("FPS counter element not found.");
+            }
+        };
+    </script>
+</body>
+</html>
