@@ -1,0 +1,21 @@
+{
+  "name": "github-pages-performance-monitor",
+  "version": "1.0.0",
+  "description": "A single-page personal website deployed via GitHub Pages, featuring a real-time FPS counter.",
+  "main": "index.html",
+  "scripts": {
+    "start": "echo 'To view this project, open index.html directly in your browser.'",
+    "deploy": "echo 'This project is automatically deployed via GitHub Actions or GitHub Pages settings.'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "github-pages",
+    "html",
+    "javascript",
+    "tailwind",
+    "fps-counter"
+  ],
+  "author": "[Your Name]",
+  "license": "MIT",
+  "homepage": "https://[your-username].github.io"
+}
